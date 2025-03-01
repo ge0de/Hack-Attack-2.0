@@ -101,4 +101,11 @@ fig.update_layout(scene=dict(
 # Display plot in Streamlit app
 st.plotly_chart(fig)
 
-#Hey guys 
+#Hey guys this is Mehdi's changes
+
+
+fig.update_layout(scene=dict(
+    xaxis=dict(range=[-10, 10]),
+    yaxis=dict(range=[-10, 10]),
+    zaxis=dict(range=[-10, 10])
+))
