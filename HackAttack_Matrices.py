@@ -3,7 +3,7 @@ import plotly.graph_objects as go  # Import Plotly for 3D visualization
 import numpy as np  # Import NumPy for matrix operations
 
 
-# Streamlit UI: Add controls for user interaction
+# Streamlit UI: Add controls for user interactionP
 st.sidebar.header("Matrix Visualizations")
 option = st.sidebar.selectbox("Choose Visualization", ["Custom Matrix", "Span of R³"])
 opacity = st.sidebar.slider("Opacity", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
@@ -29,7 +29,6 @@ def apply_matrix(matrix):
             y = [0, transformed_vectors[0, 1], transformed_vectors[1, 1], transformed_vectors[2, 1], 0]
             z = [0, transformed_vectors[0, 2], transformed_vectors[1, 2], transformed_vectors[2, 2], 0]
 
-<<<<<<< Updated upstream
             # Define the faces of the parallelepiped with correct vertex indices
             faces = [
                 [0, 1, 2],
@@ -46,27 +45,6 @@ def apply_matrix(matrix):
                     k=[face[2], face[3], face[0]],
                     opacity=0.2, color='rgba(0, 100, 255, 0.5)'  # Semi-transparent volume
                 ))
-=======
-# Add Vector Button
-if st.sidebar.button("➕ Add Vector"):
-    add_vector()
-matrix = np.array([
-    [st.sidebar.number_input(f"Row {i + 1}, Col {j + 1}", value=(1.0 if i == j else 0.0), format="%.2f") for j in range(3)]
-    for i in range(3)
-], dtype=float)
-
-# Display and Edit Vectors
-for i, vector in enumerate(st.session_state.vectors):
-    with st.sidebar.expander(f"Vector {i+1}"):
-
-        # Vector Component Inputs
-        vector["coords"] = [
-            st.number_input(f"X{i+1}", -10.0, 10.0, float(vector["coords"][0]), 0.1),
-            st.number_input(f"Y{i+1}", -10.0, 10.0, float(vector["coords"][1]), 0.1)
-        ]
-        if dimension == "3D":
-            vector["coords"].append(st.number_input(f"Z{i+1}", -10.0, 10.0, vector["coords"][2], 0.1))
->>>>>>> Stashed changes
 
         elif matrix.shape == (2, 2):  # 2D transformation (parallelogram)
             x = [0, transformed_vectors[0, 0], transformed_vectors[1, 0], 0]
@@ -122,12 +100,3 @@ fig.update_layout(scene=dict(
 
 # Display plot in Streamlit app
 st.plotly_chart(fig)
-
-#Hey guys this is Mehdi's changes
-
-
-fig.update_layout(scene=dict(
-    xaxis=dict(range=[-10, 10]),
-    yaxis=dict(range=[-10, 10]),
-    zaxis=dict(range=[-10, 10])
-))
