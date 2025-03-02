@@ -17,8 +17,13 @@ if "matrices" not in st.session_state:
 # New matrix creation UI
 st.sidebar.header("Create Matrix")
 matrix_name = st.sidebar.text_input("Enter matrix name")
+<<<<<<< HEAD
 rows = st.sidebar.number_input("Rows", min_value=1, value=3, step=1)  # Default to 3x3
 cols = st.sidebar.number_input("Columns", min_value=1, value=3, step=1)  # Default to 3x3
+=======
+rows = st.sidebar.number_input("Rows", min_value=1, value=1, step=1)
+cols = st.sidebar.number_input("Columns", min_value=1, value=1, step=1)
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
 
 if st.sidebar.button("Create Matrix"):
     if matrix_name and matrix_name not in st.session_state.matrices:
@@ -32,8 +37,12 @@ if st.sidebar.button("Create Matrix"):
 for name in list(st.session_state.matrices.keys()):
     matrix = st.session_state.matrices[name]
     rows_mat, cols_mat = matrix.shape
+<<<<<<< HEAD
 
     # Move the expander block INSIDE the for loop
+=======
+    
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
     with st.sidebar.expander(f"Matrix {name}", expanded=True):
         # Create dynamic grid for matrix input
         for i in range(rows_mat):
@@ -42,13 +51,18 @@ for name in list(st.session_state.matrices.keys()):
                 new_value = cols_grid[j].number_input(
                     f"{name}[{i+1},{j+1}]",
                     value=float(matrix[i, j]),
+<<<<<<< HEAD
                     key=f"{name}cell{i}_{j}"
+=======
+                    key=f"{name}_cell_{i}_{j}"
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
                 )
                 matrix[i, j] = new_value
         
         # Update matrix in session state
         st.session_state.matrices[name] = matrix
         
+<<<<<<< HEAD
         # Delete button for each matrix
         if st.button(f"❌ Delete {name}", key=f"delete_{name}"):
             try:
@@ -58,6 +72,18 @@ for name in list(st.session_state.matrices.keys()):
                 st.error(f"Error deleting matrix {name}: {e}")
 
 # Vector creation and management
+=======
+        # Delete button
+        if st.button(f"❌ Delete {name}", key=f"delete_{name}"):
+            del st.session_state.matrices[name]
+            try:
+
+                st.experimental_rerun()
+            except:
+                pass
+
+# Vector creation and management remains unchanged
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
 if st.sidebar.button("➕ Add Vector"):
     st.session_state.vectors.append({"x": 0.0, "y": 0.0, "z": 0.0, "color": "#FF0000"})
 
@@ -69,8 +95,8 @@ for i, vec in enumerate(st.session_state.vectors):
         vec["z"] = col3.number_input(f"z{i+1}", value=float(vec["z"]), key=f"z{i}")
         vec["color"] = st.color_picker("Color", vec["color"], key=f"color{i}")
 
-        # Delete button for each vector
         if st.button(f"❌ Delete Vector {i+1}", key=f"delete{i}"):
+<<<<<<< HEAD
             try:
                 st.session_state.vectors.pop(i)
                 st.rerun()
@@ -78,10 +104,20 @@ for i, vec in enumerate(st.session_state.vectors):
                 st.error(f"Error deleting vector {i+1}: {e}")
 
 # Visualization options
+=======
+            st.session_state.vectors.pop(i)
+            try:
+                st.experimental_rerun()
+            except:
+                pass
+
+# Visualization options remain unchanged
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
 option = st.sidebar.selectbox("Choose Visualization", ["None", "Span of R³"])
 opacity = st.sidebar.slider("Opacity", 0.1, 1.0, 0.5, 0.1)
 show_area_volume = st.sidebar.radio("Show Area/Volume", ("No", "Yes"))
 
+<<<<<<< HEAD
 # Function to display span of R³
 def show_span():
     grid_x, grid_y, grid_z = np.meshgrid(
@@ -101,8 +137,26 @@ fig = go.Figure()
 # Add span visualization if selected
 if option == "Span of R³":
     fig.add_trace(show_span())
+=======
+# 3D visualization code remains unchanged
+fig = go.Figure()
 
-# Add user vectors to 3D plot
+# Unit vectors and vector visualization remains unchanged
+unit_vectors = [
+    ([0, 0], [0, 0], [0, 0], "#FF0000"),
+    ([0, 0], [0, 0], [0, 0], "#00FF00"),
+    ([0, 0], [0, 0], [0, 0], "#0000FF")
+]
+
+for ux, uy, uz, color in unit_vectors:
+    fig.add_trace(go.Scatter3d(
+        x=ux, y=uy, z=uz,
+        mode="lines+markers",
+        marker=dict(size=5, color=color),
+        line=dict(width=5, color=color)
+    ))
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
+
 vector_points = []
 for vec in st.session_state.vectors:
     fig.add_trace(go.Scatter3d(
@@ -113,19 +167,23 @@ for vec in st.session_state.vectors:
     ))
     vector_points.append([vec["x"], vec["y"], vec["z"]])
 
-# Show parallelogram or parallelepiped if Show Area/Volume is enabled
+# Area/volume calculations remain unchanged
 if show_area_volume == "Yes" and len(vector_points) >= 2:
     vector_points = np.array(vector_points)
-    if len(vector_points) == 2:  # 2D case
+    if len(vector_points) == 2:
         v1, v2 = vector_points[:2]
         area = np.linalg.norm(np.cross(v1, v2))
         st.write(f"Area of parallelogram: {area}")
+<<<<<<< HEAD
         x, y, z = zip([0, 0, 0], v1, v2)
         fig.add_trace(go.Mesh3d(
             x=x + (x[0],), y=y + (y[0],), z=z + (z[0],),
             color='rgba(0, 100, 255, 0.3)', opacity=opacity
         ))
     elif len(vector_points) >= 3:  # 3D case
+=======
+    elif len(vector_points) >= 3:
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
         v1, v2, v3 = vector_points[:3]
         volume = np.abs(np.dot(v1, np.cross(v2, v3)))
         st.write(f"Volume of parallelepiped: {volume}")
@@ -136,14 +194,14 @@ if show_area_volume == "Yes" and len(vector_points) >= 2:
             opacity=opacity, color='rgba(0, 100, 255, 0.5)'
         ))
 
-# Calculate determinant if exactly three vectors exist
+# Determinant calculation remains unchanged
 if len(st.session_state.vectors) == 3:
     matrix = np.array([[v["x"], v["y"], v["z"]] for v in st.session_state.vectors])
     determinant = np.linalg.det(matrix)
     st.subheader("Determinant of 3x3 Matrix")
     st.write(f"Det(A) = {determinant}")
 
-# Fix 3D axes scaling
+# Axis configuration remains unchanged
 fig.update_layout(
     scene=dict(
         xaxis=dict(range=[-10, 10], title="X-Axis"),
@@ -156,13 +214,18 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
+<<<<<<< HEAD
 # Matrix operations input
+=======
+# Matrix operations input remains unchanged
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
 expr = st.text_input("Enter operation (e.g., a + b, a @ b, cross(a, b))")
 
 if expr:
     try:
         safe_dict = {k: v for k, v in st.session_state.matrices.items()}
         safe_dict["cross"] = np.cross
+<<<<<<< HEAD
         result = eval(expr, {"__builtins__": {}}, safe_dict)  # Fixed typo
         st.write(f"Result of {expr}:")
         st.write(result)
@@ -175,3 +238,10 @@ if st.session_state.matrices:
     for name, matrix in st.session_state.matrices.items():
         st.subheader(f"Matrix {name}")
         st.write(matrix)
+=======
+        result = eval(expr, {"__builtins__": {}}, safe_dict)
+        st.write(f"Result of `{expr}`:")
+        st.write(result)
+    except Exception as e:
+        st.error(f"Invalid expression: {e}")
+>>>>>>> 05a11c1036e82d546b403fdeb809573074433b7e
