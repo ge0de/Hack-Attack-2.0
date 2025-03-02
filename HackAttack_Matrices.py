@@ -1,3 +1,4 @@
+
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
@@ -12,7 +13,7 @@ if "vectors" not in st.session_state:
 # Button to add a new vector
 if st.sidebar.button("➕ Add Vector"):
     st.session_state.vectors.append({"x": 0.0, "y": 0.0, "z": 0.0, "color": "#FF0000"})
-
+    
 # Display vector inputs in sidebar
 for i, vec in enumerate(st.session_state.vectors):
     with st.sidebar.expander(f"Vector {i+1}", expanded=True):
@@ -25,14 +26,18 @@ for i, vec in enumerate(st.session_state.vectors):
         # Delete button for each vector
         if st.button(f"❌ Delete Vector {i+1}", key=f"delete{i}"):
             st.session_state.vectors.pop(i)
-            st.experimental_rerun()
-
+            try:
+                st.experimental_rerun()
+            except:
+                pass
 # Main visualization options
 option = st.sidebar.selectbox("Choose Visualization", ["Custom Matrix", "Span of R³"])
-opacity = st.sidebar.slider("Opacity", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
 show_area_volume = st.sidebar.radio("Show Area/Volume", ("No", "Yes"))
 
-# Function to apply a transformation matrix
+opacity = 0.5  # Default opacity
+if show_area_volume == "Yes" or option == "Span of R³":
+    opacity = st.sidebar.slider("Opacity", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
+
 def apply_matrix(matrix):
     basis_vectors = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # Standard basis
     transformed_vectors = np.dot(matrix, basis_vectors.T).T  # Apply transformation
@@ -52,31 +57,16 @@ def apply_matrix(matrix):
             y = [0, transformed_vectors[0, 1], transformed_vectors[1, 1], transformed_vectors[2, 1], 0]
             z = [0, transformed_vectors[0, 2], transformed_vectors[1, 2], transformed_vectors[2, 2], 0]
 
-            # Define the faces of the parallelepiped with correct vertex indices
             faces = [
-                [0, 1, 2],
-                [0, 1, 3],
-                [0, 2, 3],
-                [1, 2, 3]
+                [0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]
             ]
 
             for face in faces:
                 traces.append(go.Mesh3d(
                     x=x, y=y, z=z,
-                    i=[face[0], face[1], face[2]],
-                    j=[face[1], face[2], face[3]],
-                    k=[face[2], face[3], face[0]],
-                    opacity=0.2, color='rgba(0, 100, 255, 0.5)'  # Semi-transparent volume
+                    i=[face[0]], j=[face[1]], k=[face[2]],
+                    opacity=opacity, color='rgba(0, 100, 255, 0.5)'  # Uses selected opacity
                 ))
-
-        elif matrix.shape == (2, 2):  # 2D transformation (parallelogram)
-            x = [0, transformed_vectors[0, 0], transformed_vectors[1, 0], 0]
-            y = [0, transformed_vectors[0, 1], transformed_vectors[1, 1], 0]
-
-            traces.append(go.Scatter(
-                x=x + [x[0]], y=y + [y[0]], mode='lines', fill='toself',
-                fillcolor='rgba(0, 100, 255, 0.3)', line=dict(color='blue', width=3)
-            ))
 
     return traces
 
@@ -86,7 +76,7 @@ def show_span():
         np.linspace(-2, 2, 10), np.linspace(-2, 2, 10), np.linspace(-2, 2, 10))
     return go.Scatter3d(
         x=grid_x.flatten(), y=grid_y.flatten(), z=grid_z.flatten(),
-        mode='markers', marker=dict(size=3, color='blue', opacity=0.5)
+        mode='markers', marker=dict(size=3, color='blue', opacity=opacity)  # Uses selected opacity
     )
 
 # Initialize figure
