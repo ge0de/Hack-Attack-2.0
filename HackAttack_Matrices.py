@@ -1,100 +1,3 @@
-# import streamlit as st
-# import plotly.graph_objects as go
-# import numpy as np
-
-# # Streamlit UI
-# st.sidebar.header("Matrix Visualizationsss")
-# option = st.sidebar.selectbox("Choose Visualization", ["Custom Matrix", "Span of R³"])
-# show_area_volume = st.sidebar.radio("Show Area/Volume", ("No", "Yes"))
-
-# # Show Opacity only if needed
-# opacity = 0.5  # Default opacity
-# if show_area_volume == "Yes" or option == "Span of R³":
-#     opacity = st.sidebar.slider("Opacity", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
-
-# # Function to visualize a custom transformation matrix
-# def apply_matrix(matrix):
-#     basis_vectors = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # Standard basis vectors
-#     transformed_vectors = np.dot(matrix, basis_vectors.T).T  # Apply transformation
-
-#     traces = []
-#     for vec, color in zip(transformed_vectors, ['red', 'green', 'blue']):
-#         traces.append(go.Scatter3d(
-#             x=[0, vec[0]], y=[0, vec[1]], z=[0, vec[2]],
-#             mode='lines+markers',
-#             marker=dict(size=5, color=color),
-#             line=dict(width=5, color=color)
-#         ))
-
-#     # Add parallelepiped visualization
-#     if show_area_volume == "Yes":
-#         v0 = np.array([0, 0, 0])
-#         v1 = transformed_vectors[0]
-#         v2 = transformed_vectors[1]
-#         v3 = transformed_vectors[2]
-#         v4 = v1 + v2
-#         v5 = v2 + v3
-#         v6 = v1 + v3
-#         v7 = v1 + v2 + v3
-
-#         x = [v0[0], v1[0], v2[0], v3[0], v4[0], v5[0], v6[0], v7[0]]
-#         y = [v0[1], v1[1], v2[1], v3[1], v4[1], v5[1], v6[1], v7[1]]
-#         z = [v0[2], v1[2], v2[2], v3[2], v4[2], v5[2], v6[2], v7[2]]
-
-#         faces = [
-#             [0, 1, 2], [1, 2, 4], [0, 1, 3], [1, 3, 6], [0, 2, 3], [2, 3, 5],  
-#             [7, 5, 4], [7, 6, 4], [7, 6, 5], [4, 5, 2], [4, 6, 1], [5, 6, 3]
-#         ]
-
-#         for face in faces:
-#             traces.append(go.Mesh3d(
-#                 x=x, y=y, z=z,
-#                 i=[face[0]], j=[face[1]], k=[face[2]],
-#                 opacity=opacity, color='blue'
-#             ))
-
-#     return traces
-
-# # Function to display the span of R³
-# def show_span():
-#     grid_x, grid_y, grid_z = np.meshgrid(np.linspace(-2, 2, 10),
-#                                           np.linspace(-2, 2, 10),
-#                                           np.linspace(-2, 2, 10))
-
-#     x_flat = grid_x.flatten()
-#     y_flat = grid_y.flatten()
-#     z_flat = grid_z.flatten()
-
-#     return go.Scatter3d(
-#         x=x_flat, y=y_flat, z=z_flat,
-#         mode='markers',
-#         marker=dict(size=3, color='blue', opacity=opacity)
-#     )
-
-# fig = go.Figure()
-
-# if option == "Custom Matrix":
-#     st.sidebar.text("Enter Matrix (3x3)")
-#     matrix = np.array([
-#         [st.sidebar.number_input(f"Row {i + 1}, Col 1", value=1.0) for i in range(3)],
-#         [st.sidebar.number_input(f"Row {i + 1}, Col 2", value=0.0) for i in range(3)],
-#         [st.sidebar.number_input(f"Row {i + 1}, Col 3", value=0.0) for i in range(3)]
-#     ])
-#     for trace in apply_matrix(matrix):
-#         fig.add_trace(trace)
-# elif option == "Span of R³":
-#     fig.add_trace(show_span())
-
-# # Update layout
-# fig.update_layout(scene=dict(
-#     xaxis=dict(range=[-20, 20]),
-#     yaxis=dict(range=[-20, 20]),
-#     zaxis=dict(range=[-20, 20])
-# ))
-
-# # Display plot in Streamlit app
-# st.plotly_chart(fig)
-
 
 import streamlit as st
 import numpy as np
@@ -110,7 +13,7 @@ if "vectors" not in st.session_state:
 # Button to add a new vector
 if st.sidebar.button("➕ Add Vector"):
     st.session_state.vectors.append({"x": 0.0, "y": 0.0, "z": 0.0, "color": "#FF0000"})
-
+    
 # Display vector inputs in sidebar
 for i, vec in enumerate(st.session_state.vectors):
     with st.sidebar.expander(f"Vector {i+1}", expanded=True):
