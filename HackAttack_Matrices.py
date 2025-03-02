@@ -129,3 +129,48 @@ if len(st.session_state.vectors) >= 2:
     col2.write(f"*a - b* = {v1 - v2}")
     col1.write(f"*Dot Product (a · b)* = {np.dot(v1, v2)}")
     col2.write(f"*Cross Product (a × b)* = {np.cross(v1, v2)}")
+
+
+
+st.sidebar.header("Matrix & Vector Operations")
+
+# Store named matrices/vectors
+if "matrices" not in st.session_state:
+    st.session_state.matrices = {}
+
+# Function to add a new vector/matrix
+def add_matrix(name):
+    if name and name not in st.session_state.matrices:
+        st.session_state.matrices[name] = np.eye(3)  # Default: Identity matrix
+
+# Input for naming matrices/vectors
+matrix_name = st.sidebar.text_input("Enter name (e.g., a, b, c)")
+
+# Button to create matrix
+if st.sidebar.button("➕ Add Matrix/Vector"):
+    add_matrix(matrix_name)
+
+# Display matrices in the sidebar
+for name, matrix in list(st.session_state.matrices.items()):
+    with st.sidebar.expander(f"Matrix/Vector {name}", expanded=True):
+        cols = [st.columns(3) for _ in range(3)]  # Create 3x3 grid
+        for i in range(3):
+            for j in range(3):
+                matrix[i, j] = cols[i][j].number_input(f"{name}[{i+1},{j+1}]", value=matrix[i, j], key=f"{name}{i}{j}")
+        if st.button(f"❌ Delete {name}", key=f"delete_{name}"):
+            del st.session_state.matrices[name]
+            st.experimental_rerun()
+
+# Expression input (like Desmos)
+expr = st.text_input("Enter operation (e.g., a + b, a @ b, cross(a, b))")
+
+# Evaluate and display result
+if expr:
+    try:
+        safe_dict = {k: v for k, v in st.session_state.matrices.items()}
+        safe_dict["cross"] = np.cross  # Allow cross product
+        result = eval(expr, {"__builtins__": {}}, safe_dict)  # Safe eval
+        st.write(f"Result of `{expr}`:")
+        st.write(result)
+    except Exception as e:
+        st.error(f"Invalid expression: {e}")
